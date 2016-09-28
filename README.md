@@ -5,13 +5,13 @@ Tibero is the name of a relational databases and database management system util
 
 ### Options ###
 
--  -p|--port PORT_NUMBER (default 8629)
--   -s|--sid SID 
--   -sf|--sid_file SIDFILE - file containing sids one per line
+-  -p   |--port PORT_NUMBER (default 8629)
+-   -s  |--sid SID 
+-   -sf |--sid_file SIDFILE - file containing sids one per line
 -   -upf|--user_passf  - file containing username:password one per line
--   -up|--user_pass  - username:password for auth
--   -sl|--sleep TIMEOUT default 0
--   -e|--execute QUERY - execute query after login
+-   -up |--user_pass  - username:password for auth
+-   -sl |--sleep TIMEOUT default 0
+-   -e  |--execute QUERY - execute query after login
 
 ### Usage samples ###
 
