@@ -87,10 +87,17 @@ public class Tibero {
 					i++;
 					continue;
 				}
+			} else if (args[i].equalsIgnoreCase("-upf")
+					|| args[i].equalsIgnoreCase("--user_pass_file")) {
+				if (i + 1 < args.length) {
+					USER_PASSFILE = args[i + 1];
+					i++;
+					continue;
+				}
 			} else if (args[i].equalsIgnoreCase("-up")
 					|| args[i].equalsIgnoreCase("--user_pass")) {
 				if (i + 1 < args.length) {
-					USER_PASSFILE = args[i + 1];
+					USER_PASS.add(args[i + 1]);
 					i++;
 					continue;
 				}
@@ -203,19 +210,22 @@ public class Tibero {
 		Statement stmt = null;
 		ResultSet rs = null;
 		int columnsNumber = 0;
+		success("Executing query");
+		StringBuffer str = new StringBuffer();
 		try {
 			stmt = conn.createStatement();
 			rs = stmt.executeQuery(query);
 			ResultSetMetaData rsmd = rs.getMetaData();
 			columnsNumber = rsmd.getColumnCount();
 			while (rs.next()) {
+				str.setLength(0);
 				for (int i = 1; i <= columnsNumber; i++) {
 					if (i > 1)
-						System.out.print(",  ");
-					String columnValue = rs.getString(i);
-					System.out.print(columnValue + " " + rsmd.getColumnName(i));
+						str.append(",  ");
+
+					str.append(rs.getString(i) + " " + rsmd.getColumnName(i));
 				}
-				System.out.println("");
+				success(str.toString());
 			}
 
 		} catch (SQLException e) {
