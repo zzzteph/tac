@@ -17,9 +17,14 @@ public class Tibero {
 	public static final String ANSI_RESET = "\u001B[0m";
 	public static final String ANSI_RED = "\u001B[31m";
 	public static final String ANSI_GREEN = "\u001B[32m";
+	public static final String ANSI_YELLOW = "\u001B[33m";
 
 	public static void error(String str) {
 		System.out.println(ANSI_RED + str + ANSI_RESET);
+	}
+
+	public static void info(String str) {
+		System.out.println(ANSI_YELLOW + str + ANSI_RESET);
 	}
 
 	public static void success(String str) {
@@ -33,7 +38,9 @@ public class Tibero {
 		System.out
 				.println("-sf|--sid_file SIDFILE - file containing sids one per line");
 		System.out
-				.println("-uo|--user_pass  - file containing username:password one per line");
+				.println("-upf|--user_passf  - file containing username:password one per line");
+		System.out.println("-up|--user_pass  - username:password for auth");
+
 		System.out.println("-sl|--sleep TIMEOUT default 0");
 		System.out.println("-e|--execute QUERY - execute query after login");
 		System.exit(1);
@@ -130,7 +137,8 @@ public class Tibero {
 			hosts.add(IPFile + ":" + PORT);
 		}
 
-		if (hosts.size() == 0 || USER_PASSFILE.length() == 0) {
+		if (hosts.size() == 0
+				|| (USER_PASSFILE.length() == 0 && USER_PASS.size() == 0)) {
 			help();
 		}
 
@@ -146,6 +154,11 @@ public class Tibero {
 			}
 		}
 
+		if (SIDS.size() == 0) {
+			System.out
+					.println("NO SIDS PROVIDED - BRUTEFORCING USERNAME:PASSWORD");
+			SIDS.add("TMP");
+		}
 		if (USER_PASSFILE.length() > 1) {
 			for (String tmp : readFile(USER_PASSFILE)) {
 				USER_PASS.add(tmp);
@@ -189,7 +202,10 @@ public class Tibero {
 				} catch (SQLException e) {
 					error(address + ":" + sid + ":" + login + ":" + password);
 					error(e.getMessage());
-
+					if (e.getMessage().contains("DB_NAME")) {
+						info(address + ":" + sid + ":" + login + ":" + password
+								+ " POSSIBLE AUTH FOUND");
+					}
 				}
 
 				if (isConnected) {
@@ -217,13 +233,26 @@ public class Tibero {
 			rs = stmt.executeQuery(query);
 			ResultSetMetaData rsmd = rs.getMetaData();
 			columnsNumber = rsmd.getColumnCount();
+			boolean shownColumns = false;
 			while (rs.next()) {
 				str.setLength(0);
+				if (!shownColumns) {
+					for (int i = 1; i <= columnsNumber; i++) {
+						if (i > 1)
+							str.append(",  ");
+						str.append(rsmd.getColumnName(i) + " ");
+					}
+
+					success(str.toString());
+					str.setLength(0);
+					shownColumns = true;
+				}
+
 				for (int i = 1; i <= columnsNumber; i++) {
 					if (i > 1)
 						str.append(",  ");
 
-					str.append(rs.getString(i) + " " + rsmd.getColumnName(i));
+					str.append(rs.getString(i) + " ");
 				}
 				success(str.toString());
 			}
